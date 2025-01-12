@@ -1,0 +1,114 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "97a0bedf-235e-4eda-8d7e-1b7dddd9c52a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdin",
+     "output_type": "stream",
+     "text": [
+      "Enter the path to the questions file:   questions.txt\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Error: File not found. Please check the file path and try again.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import random\n",
+    "\n",
+    "# Function to load questions and answers from a file\n",
+    "def load_questions(file_path):\n",
+    "    questions = []\n",
+    "    with open(file_path, 'r') as file:\n",
+    "        for line in file:\n",
+    "            question_data = line.strip().split('|')\n",
+    "            if len(question_data) == 2:\n",
+    "                question, answer = question_data\n",
+    "                questions.append((question, answer))\n",
+    "    return questions\n",
+    "\n",
+    "# Function to generate a quiz\n",
+    "def generate_quiz(questions, num_questions):\n",
+    "    return random.sample(questions, min(num_questions, len(questions)))\n",
+    "\n",
+    "# Function to administer the quiz and collect answers\n",
+    "def administer_quiz(quiz):\n",
+    "    student_answers = {}\n",
+    "    print(\"\\n--- Quiz Start ---\\n\")\n",
+    "    for i, (question, _) in enumerate(quiz, 1):\n",
+    "        print(f\"Q{i}: {question}\")\n",
+    "        student_answer = input(\"Your answer: \").strip()\n",
+    "        student_answers[i] = student_answer\n",
+    "    print(\"\\n--- Quiz End ---\\n\")\n",
+    "    return student_answers\n",
+    "\n",
+    "# Function to grade the quiz\n",
+    "def grade_quiz(quiz, student_answers):\n",
+    "    score = 0\n",
+    "    print(\"\\n--- Grading ---\\n\")\n",
+    "    for i, (question, correct_answer) in enumerate(quiz, 1):\n",
+    "        student_answer = student_answers.get(i, \"\")\n",
+    "        if student_answer.lower() == correct_answer.lower():\n",
+    "            score += 1\n",
+    "            result = \"Correct\"\n",
+    "        else:\n",
+    "            result = f\"Wrong (Correct: {correct_answer})\"\n",
+    "        print(f\"Q{i}: {question}\\nYour Answer: {student_answer}\\nResult: {result}\\n\")\n",
+    "    print(f\"Final Score: {score}/{len(quiz)}\")\n",
+    "    return score\n",
+    "\n",
+    "# Main function to orchestrate the quiz\n",
+    "def quiz_maker():\n",
+    "    file_path = input(\"Enter the path to the questions file: \").strip()\n",
+    "    try:\n",
+    "        questions = load_questions(file_path)\n",
+    "        if not questions:\n",
+    "            print(\"No questions found in the file.\")\n",
+    "            return\n",
+    "\n",
+    "        num_questions = int(input(\"How many questions would you like in the quiz? \"))\n",
+    "        quiz = generate_quiz(questions, num_questions)\n",
+    "\n",
+    "        student_answers = administer_quiz(quiz)\n",
+    "        grade_quiz(quiz, student_answers)\n",
+    "\n",
+    "    except FileNotFoundError:\n",
+    "        print(\"Error: File not found. Please check the file path and try again.\")\n",
+    "    except ValueError:\n",
+    "        print(\"Error: Invalid input. Please ensure the file and inputs are correctly formatted.\")\n",
+    "\n",
+    "if __name__ == \"__main__\":\n",
+    "    quiz_maker()\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
